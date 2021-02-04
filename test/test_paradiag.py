@@ -373,6 +373,14 @@ def test_relax_mixed():
         assert(fd.norm(err) < 1.0e-15)
 
 
+### BEGIN: Added by Werner
+
+
+### END: Added by Werner
+
+
+
+
 def test_diag_precon():
     #Test PCDIAGFFT by using it
     #within the relaxation method
