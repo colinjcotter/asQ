@@ -72,8 +72,9 @@ class DiagFFTPC(fd.PCBase):
                     MixedCpts.append(fd.TensorElement(SubV, shape))
                 else:
                     raise(NotImplementedError)
-            self.CblockV = np.prod([FunctionSpace(mesh,
-                                    MixedCpt) for i in range(M)])
+            dim = len(MixedCpts)
+            self.CblockV = np.prod([fd.FunctionSpace(mesh,
+                                    MixedCpts[i]) for i in range(dim)])
         else:
             self.ncpts = 1
             if isinstance(Ve, fd.FiniteElement):
