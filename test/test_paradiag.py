@@ -372,15 +372,6 @@ def test_relax_mixed():
         err.assign(un-pun)
         assert(fd.norm(err) < 1.0e-15)
 
-
-### BEGIN: Added by Werner
-
-
-### END: Added by Werner
-
-
-
-
 def test_diag_precon():
     #Test PCDIAGFFT by using it
     #within the relaxation method
@@ -451,3 +442,17 @@ def test_diag_precon():
         un.assign(wallsE)
         err.assign(un-unD)
         assert(fd.norm(err) < 1.0e-13)
+
+
+
+
+### BEGIN: Added by Werner
+ 
+
+
+
+def test_diag_precon_mixed():
+    pass
+
+
+### END: Added by Werner
