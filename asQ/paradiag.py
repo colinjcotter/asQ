@@ -2,6 +2,11 @@ import numpy as np
 import firedrake as fd
 from scipy.fft import fft, ifft
 
+#use ipython:
+#load_ext autoreload
+#autoreload
+print('reload paradiag module')
+
 class DiagFFTPC(fd.PCBase):
 
     r"""A preconditioner for all-at-once systems with alpha-circulant
@@ -67,13 +72,13 @@ class DiagFFTPC(fd.PCBase):
                 elif isinstance(subV, fd.VectorElement):
                     shape = (2,SubV.num_sub_elements())
                     MixedCpts.append(fd.TensorElement(SubV, shape))
-                elif isinstance(subV, fd.TensorElement):
-                    shape = (2,) + Subv._shape
+                elif isinstance(SubV, fd.TensorElement):
+                    shape = (2,) + SubV._shape
                     MixedCpts.append(fd.TensorElement(SubV, shape))
                 else:
                     raise(NotImplementedError)
-            self.CblockV = np.prod([FunctionSpace(mesh,
-                                    MixedCpt) for i in range(M)])
+            self.CblockV = np.prod([fd.FunctionSpace(mesh,
+                                    MixedCpts) for i in range(M)])
         else:
             self.ncpts = 1
             if isinstance(Ve, fd.FiniteElement):
@@ -84,7 +89,7 @@ class DiagFFTPC(fd.PCBase):
                 self.CblockV = fd.FunctionSpace(mesh,
                                                 fd.TensorElement(Ve, shape))
             elif isinstance(Ve, fd.TensorElement):
-                shape = (2,) + Subv._shape
+                shape = (2,) + SubV._shape
                 self.CblockV = fd.FunctionSpace(mesh,
                                                 fd.TensorElement(Ve, shape))
             else:
