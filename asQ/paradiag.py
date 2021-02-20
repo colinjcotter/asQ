@@ -77,8 +77,10 @@ class DiagFFTPC(fd.PCBase):
                     MixedCpts.append(fd.TensorElement(SubV, shape))
                 else:
                     raise(NotImplementedError)
+
+            dim = len(MixedCpts)
             self.CblockV = np.prod([fd.FunctionSpace(mesh,
-                                    MixedCpts) for i in range(M)])
+                                    MixedCpts[i]) for i in range(dim)])
         else:
             self.ncpts = 1
             if isinstance(Ve, fd.FiniteElement):
@@ -100,20 +102,20 @@ class DiagFFTPC(fd.PCBase):
         vs = fd.TestFunctions(self.CblockV)
         self.u0 = fd.Function(self.CblockV) #we will create a linearisation
         us = fd.split(self.u0)
-        
+
         ##extract the real and imaginary parts
         vsr = []
         vsi = []
         usr = []
         usi = []
-        
+
         if isinstance(Ve, fd.MixedElement):
             N = Ve.num_sub_elements()
             for i in range(N):
                 SubV = Ve.sub_elements()[i]
                 if isinstance(SubV, fd.FiniteElement):
-                    vsr.append(vs.sub(i).sub(0))
-                    vsi.append(vs.sub(i).sub(1))
+                    vsr.append(vs[i][0])
+                    vsi.append(vs[i][0])
                     usr.append(self.u0.sub(i).sub(0))
                     usi.append(self.u0.sub(i).sub(1))
                 elif isinstance(subV, fd.VectorElement):

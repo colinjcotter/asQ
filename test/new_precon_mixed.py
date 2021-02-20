@@ -3,7 +3,7 @@ import firedrake as fd
 import numpy as np
 
 import petsc4py.PETSc as PETSc 
-#PETSc.Sys.popErrorHandler() 
+PETSc.Sys.popErrorHandler() 
 
 #checks that the all-at-once system is the same as solving
 #timesteps sequentially using the mixed wave equation as an
