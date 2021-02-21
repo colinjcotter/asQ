@@ -221,9 +221,11 @@ class DiagFFTPC(fd.PCBase):
             if self.ncpts > 1:
                 Jins = self.Jprob_in.split()
                 for cpt in range(self.ncpts):
-                    Jins.sub(cpt).sub(0).assign(
+                    print(Jins[cpt].function_space())
+                    print(type(self.xfr.split()[self.ncpts*i+cpt]))
+                    Jins[cpt].sub(0).assign(
                         self.xfr.split()[self.ncpts*i+cpt])
-                    Jins.sub(cpt).sub(1).assign(
+                    Jins[cpt].sub(1).assign(
                         self.xfi.split()[self.ncpts*i+cpt])
             else:
                 self.Jprob_in.sub(0).assign(self.xfr.split()[i])
