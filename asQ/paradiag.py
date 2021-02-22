@@ -69,7 +69,7 @@ class DiagFFTPC(fd.PCBase):
                 SubV = Ve.sub_elements()[cpt]
                 if isinstance(SubV, fd.FiniteElement):
                     MixedCpts.append(fd.VectorElement(SubV, dim=2))
-                elif isinstance(subV, fd.VectorElement):
+                elif isinstance(SubV, fd.VectorElement):
                     shape = (2,SubV.num_sub_elements())
                     MixedCpts.append(fd.TensorElement(SubV, shape))
                 elif isinstance(SubV, fd.TensorElement):
@@ -118,12 +118,12 @@ class DiagFFTPC(fd.PCBase):
                     vsi.append(vs[i][0])
                     usr.append(self.u0.sub(i).sub(0))
                     usi.append(self.u0.sub(i).sub(1))
-                elif isinstance(subV, fd.VectorElement):
+                elif isinstance(SubV, fd.VectorElement):
                     vsr.append(vs.sub(i)[0,:])
                     vsi.append(vs.sub(i)[1,:])
                     usr.append(self.u0.sub(i)[0,:])
                     usi.append(self.u0.sub(i)[1,:])
-                elif isinstance(subV, fd.TensorElement):
+                elif isinstance(SubV, fd.TensorElement):
                     vsr.append(vs.sub(i)[0,:])
                     vsi.append(vs.sub(i)[1,:])
                     usr.append(self.u0.sub(i)[0,:])

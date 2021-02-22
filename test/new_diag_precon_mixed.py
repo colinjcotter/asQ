@@ -3,7 +3,7 @@ import firedrake as fd
 import numpy as np
 
 import petsc4py.PETSc as PETSc
-PETSc.Sys.popErrorHandler() 
+#PETSc.Sys.popErrorHandler() 
 
 #print("Werner's routine")
 
