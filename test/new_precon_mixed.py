@@ -34,8 +34,9 @@ def form_mass(uu, up, vu, vp):
 
 
 diagfft_options = {
-    'ksp_type':'preonly',
+    'ksp_type':'gmres',
     'pc_type':'lu',
+    'ksp_monitor':None,
     'pc_factor_mat_solver_type':'mumps',
     'mat_type':'aij'}
 

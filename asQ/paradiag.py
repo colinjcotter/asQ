@@ -113,18 +113,19 @@ class DiagFFTPC(fd.PCBase):
             N = Ve.num_sub_elements()
             for i in range(N):
                 SubV = Ve.sub_elements()[i]
-                if isinstance(SubV, fd.FiniteElement):
+                if len(SubV.value_shape == 0):
                     vsr.append(vs[i][0])
-                    vsi.append(vs[i][0])
-                    usr.append(self.u0.sub(i).sub(0))
-                    usi.append(self.u0.sub(i).sub(1))
-                elif isinstance(SubV, fd.VectorElement):
-                    vsr.append(vs.sub(i)[0,:])
-                    vsi.append(vs.sub(i)[1,:])
-                    usr.append(self.u0.sub(i)[0,:])
-                    usi.append(self.u0.sub(i)[1,:])
-                elif isinstance(SubV, fd.TensorElement):
-                    vsr.append(vs.sub(i)[0,:])
+                    vsi.append(vs[i][1])
+                    usr.append(us[i][0])
+                    usi.append(us[i][1])
+                elif len(SubV.value_shape == 1):
+                    vsr.append(vs[i][0,:])
+                    vsi.append(vs[i][1,:])
+                    usr.append(us[i][0,:])
+                    usi.append(us[i][1,:])
+                elif len(SubV.value_shape == 2):
+                    vsr.append(vs[i][0,:,:])
+                    etc
                     vsi.append(vs.sub(i)[1,:])
                     usr.append(self.u0.sub(i)[0,:])
                     usi.append(self.u0.sub(i)[1,:])
@@ -149,6 +150,11 @@ class DiagFFTPC(fd.PCBase):
             else:
                 raise(NotImplementedError)
 
+        print(usr)
+        print(usi)
+        print(vsr)
+        print(vsi)
+            
         ## input and output functions
         self.Jprob_in = fd.Function(self.CblockV)
         self.Jprob_out = fd.Function(self.CblockV)
@@ -221,8 +227,6 @@ class DiagFFTPC(fd.PCBase):
             if self.ncpts > 1:
                 Jins = self.Jprob_in.split()
                 for cpt in range(self.ncpts):
-                    print(Jins[cpt].function_space())
-                    print(type(self.xfr.split()[self.ncpts*i+cpt]))
                     Jins[cpt].sub(0).assign(
                         self.xfr.split()[self.ncpts*i+cpt])
                     Jins[cpt].sub(1).assign(
