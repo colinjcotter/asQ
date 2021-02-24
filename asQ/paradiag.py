@@ -113,18 +113,19 @@ class DiagFFTPC(fd.PCBase):
             N = Ve.num_sub_elements()
             for i in range(N):
                 SubV = Ve.sub_elements()[i]
-                if isinstance(SubV, fd.FiniteElement):
+                if len(SubV.value_shape == 0):
                     vsr.append(vs[i][0])
-                    vsi.append(vs[i][0])
-                    usr.append(self.u0.sub(i).sub(0))
-                    usi.append(self.u0.sub(i).sub(1))
-                elif isinstance(SubV, fd.VectorElement):
-                    vsr.append(vs.sub(i)[0,:])
-                    vsi.append(vs.sub(i)[1,:])
-                    usr.append(self.u0.sub(i)[0,:])
-                    usi.append(self.u0.sub(i)[1,:])
-                elif isinstance(SubV, fd.TensorElement):
-                    vsr.append(vs.sub(i)[0,:])
+                    vsi.append(vs[i][1])
+                    usr.append(us[i][0])
+                    usi.append(us[i][1])
+                elif len(SubV.value_shape == 1):
+                    vsr.append(vs[i][0,:])
+                    vsi.append(vs[i][1,:])
+                    usr.append(us[i][0,:])
+                    usi.append(us[i][1,:])
+                elif len(SubV.value_shape == 2):
+                    vsr.append(vs[i][0,:,:])
+                    etc
                     vsi.append(vs.sub(i)[1,:])
                     usr.append(self.u0.sub(i)[0,:])
                     usi.append(self.u0.sub(i)[1,:])
