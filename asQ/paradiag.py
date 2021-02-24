@@ -113,22 +113,21 @@ class DiagFFTPC(fd.PCBase):
             N = Ve.num_sub_elements()
             for i in range(N):
                 SubV = Ve.sub_elements()[i]
-                if len(SubV.value_shape == 0):
+                if len(SubV.value_shape()) == 0:
                     vsr.append(vs[i][0])
                     vsi.append(vs[i][1])
                     usr.append(us[i][0])
                     usi.append(us[i][1])
-                elif len(SubV.value_shape == 1):
+                elif len(SubV.value_shape()) == 1:
                     vsr.append(vs[i][0,:])
                     vsi.append(vs[i][1,:])
                     usr.append(us[i][0,:])
                     usi.append(us[i][1,:])
-                elif len(SubV.value_shape == 2):
+                elif len(SubV.value_shape()) == 2:
                     vsr.append(vs[i][0,:,:])
-                    etc
-                    vsi.append(vs.sub(i)[1,:])
-                    usr.append(self.u0.sub(i)[0,:])
-                    usi.append(self.u0.sub(i)[1,:])
+                    vsi.append(vs[i][1,:,:])
+                    usr.append(us[i][0,:,:])
+                    usi.append(us[i][1,:,:])
                 else:
                     raise(NotImplementedError)
         else:
@@ -150,11 +149,7 @@ class DiagFFTPC(fd.PCBase):
             else:
                 raise(NotImplementedError)
 
-        print(usr)
-        print(usi)
-        print(vsr)
-        print(vsi)
-            
+                   
         ## input and output functions
         self.Jprob_in = fd.Function(self.CblockV)
         self.Jprob_out = fd.Function(self.CblockV)
@@ -240,12 +235,12 @@ class DiagFFTPC(fd.PCBase):
 
             #copy the data from solver output
             if self.ncpts > 1:
-                Jouts = self.Jprob_out.split()
+                Jpouts = self.Jprob_out.split()
                 for cpt in range(self.ncpts):
                     self.xfr.split()[self.ncpts*i+cpt].assign(
-                        Jpouts.sub(cpt).sub(0))
+                        Jpouts[cpt].sub(0))
                     self.xfi.split()[self.ncpts*i+cpt].assign(
-                        Jpouts.sub(cpt).sub(1))
+                        Jpouts[cpt].sub(1))
             else:
                 Jpouts = self.Jprob_out
                 self.xfr.split()[i].assign(Jpouts.sub(0))
