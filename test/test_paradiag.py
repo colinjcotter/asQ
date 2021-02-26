@@ -332,12 +332,12 @@ def test_relax_mixed():
     def form_mass(uu, up, vu, vp):
         return (fd.inner(uu, vu) + up*vp)*fd.dx
     
-    #PD = asQ.paradiag(form_function=form_function,
-                           #form_mass=form_mass, W=W, w0=w0, dt=dt,
-                           #theta=theta, alpha=alpha, M=M,
-                           #solver_parameters=solver_parameters,
-                           #circ="outside", tol=1.0e-12)
-    #PD.solve(verbose=True)
+    PD = asQ.paradiag(form_function=form_function,
+                           form_mass=form_mass, W=W, w0=w0, dt=dt,
+                           theta=theta, alpha=alpha, M=M,
+                           solver_parameters=solver_parameters,
+                           circ="outside", tol=1.0e-12)
+    PD.solve(verbose=True)
 
     #sequential solver
     un = fd.Function(W)
@@ -357,20 +357,20 @@ def test_relax_mixed():
     solver_parameters = {'ksp_type':'preonly', 'pc_type':'lu',
                          'pc_factor_mat_solver_type':'mumps',
                          'mat_type':'aij'}
-    #ssolver = fd.NonlinearVariationalSolver(sprob, solver_parameters=solver_parameters)
-    #ssolver.solve()
+    ssolver = fd.NonlinearVariationalSolver(sprob, solver_parameters=solver_parameters)
+    ssolver.solve()
 
-    #err = fd.Function(W, name="err")
-    #pun = fd.Function(W, name="pun")
-    #puns = pun.split()
-    #for i in range(M):
-        #ssolver.solve()
-        #un.assign(unp1)
-        #walls = PD.w_all.split()[2*i:2*i+2]
-        #for k in range(2):
-            #puns[k].assign(walls[k])
-        #err.assign(un-pun)
-        #assert(fd.norm(err) < 1.0e-15)
+    err = fd.Function(W, name="err")
+    pun = fd.Function(W, name="pun")
+    puns = pun.split()
+    for i in range(M):
+        ssolver.solve()
+        un.assign(unp1)
+        walls = PD.w_all.split()[2*i:2*i+2]
+        for k in range(2):
+            puns[k].assign(walls[k])
+        err.assign(un-pun)
+        assert(fd.norm(err) < 1.0e-15)
 
 def test_diag_precon():
     #Test PCDIAGFFT by using it
