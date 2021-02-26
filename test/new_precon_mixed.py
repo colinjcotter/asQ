@@ -19,8 +19,8 @@ W = V * Q
 x, y = fd.SpatialCoordinate(mesh)
 w0 = fd.Function(W)
 u0, p0 = w0.split()
-p0.interpolate(fd.exp(-((x-0.5)**2 + (y-0.5)**2)/0.5**2))
-dt = 0.01
+p0.interpolate(fd.exp(-((x-0.5)**2 + (y-0.5)**2)/0.1**2))
+dt = 0.1
 theta = 0.5
 alpha = 0.001
 M = 10
@@ -35,7 +35,7 @@ def form_mass(uu, up, vu, vp):
 
 
 diagfft_options = {
-    #'ksp_type':'gmres',
+    'ksp_type':'gmres',
     'pc_type':'lu',
     'ksp_monitor':None,
     'pc_factor_mat_solver_type':'mumps',
@@ -90,7 +90,6 @@ for i in range(M):
     for k in range(2):
         puns[k].assign(walls[k])
     err.assign(un-pun)
-    print(fd.norm(err))
     assert(fd.norm(err) < 1.0e-15)
  
 

@@ -2,11 +2,6 @@ import numpy as np
 import firedrake as fd
 from scipy.fft import fft, ifft
 
-#use ipython:
-#load_ext autoreload
-#autoreload
-print('reload paradiag module')
-
 class DiagFFTPC(fd.PCBase):
 
     r"""A preconditioner for all-at-once systems with alpha-circulant

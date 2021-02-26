@@ -205,12 +205,12 @@ def test_solve_para_form_mixed():
     def form_mass(uu, up, vu, vp):
         return (fd.inner(uu, vu) + up*vp)*fd.dx
     
-    #PD = asQ.paradiag(form_function=form_function,
-                           #form_mass=form_mass, W=W, w0=w0, dt=dt,
-                           #theta=theta, alpha=alpha, M=M,
-                           #solver_parameters=solver_parameters,
-                           #circ="none")
-    #PD.solve()
+    PD = asQ.paradiag(form_function=form_function,
+                           form_mass=form_mass, W=W, w0=w0, dt=dt,
+                           theta=theta, alpha=alpha, M=M,
+                           solver_parameters=solver_parameters,
+                           circ="none")
+    PD.solve()
 
     #sequential solver
     un = fd.Function(W)
@@ -230,20 +230,20 @@ def test_solve_para_form_mixed():
     solver_parameters = {'ksp_type':'preonly', 'pc_type':'lu',
                          'pc_factor_mat_solver_type':'mumps',
                          'mat_type':'aij'}
-    #ssolver = fd.NonlinearVariationalSolver(sprob, solver_parameters=solver_parameters)
-    #ssolver.solve()
+    ssolver = fd.NonlinearVariationalSolver(sprob, solver_parameters=solver_parameters)
+    ssolver.solve()
 
-    #err = fd.Function(W, name="err")
-    #pun = fd.Function(W, name="pun")
-    #puns = pun.split()
-    #for i in range(M):
-        #ssolver.solve()
-        #un.assign(unp1)
-        #walls = PD.w_all.split()[2*i:2*i+2]
-        #for k in range(2):
-            #puns[k].assign(walls[k])
-        #err.assign(un-pun)
-        #assert(fd.norm(err) < 1.0e-15)
+    err = fd.Function(W, name="err")
+    pun = fd.Function(W, name="pun")
+    puns = pun.split()
+    for i in range(M):
+        ssolver.solve()
+        un.assign(unp1)
+        walls = PD.w_all.split()[2*i:2*i+2]
+        for k in range(2):
+            puns[k].assign(walls[k])
+        err.assign(un-pun)
+        assert(fd.norm(err) < 1.0e-15)
 
         
 def test_relax():
@@ -441,10 +441,10 @@ def test_diag_precon():
         unD.assign(walls)
         un.assign(wallsE)
         err.assign(un-unD)
+        print(fd.norm(un), fd.norm(err), fd.norm(unD), 'heat eq')
         assert(fd.norm(err) < 1.0e-13)
 
 
-### BEGIN: Added by Werner
 def test_diag_precon_mixed():
     #checks that the all-at-once system is the same as solving
     #timesteps sequentially using the mixed wave equation as an
@@ -459,7 +459,7 @@ def test_diag_precon_mixed():
     x, y = fd.SpatialCoordinate(mesh)
     w0 = fd.Function(W)
     u0, p0 = w0.split()
-    p0.interpolate(fd.exp(-((x-0.5)**2 + (y-0.5)**2)/0.5**2))
+    p0.interpolate(fd.sin(fd.exp(-((x-0.5)**2 + (y-0.5)**2)/0.1**2)))
     dt = 0.01
     theta = 0.5
     alpha = 0.001
@@ -522,6 +522,7 @@ def test_diag_precon_mixed():
     err = fd.Function(W, name="err")
     pun = fd.Function(W, name="pun")
     puns = pun.split()
+    file0 = fd.File('test2.pvd')
     for i in range(M):
         ssolver.solve()
         un.assign(unp1)
@@ -529,6 +530,5 @@ def test_diag_precon_mixed():
         for k in range(2):
             puns[k].assign(walls[k])
         err.assign(un-pun)
+        file0.write(*un.split(), *pun.split())
         assert(fd.norm(err) < 1.0e-15)
-
-### END: Added by Werner
