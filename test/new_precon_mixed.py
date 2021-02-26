@@ -1,6 +1,7 @@
 import asQ
 import firedrake as fd
 import numpy as np
+import matplotlib.pyplot as plt
 
 import petsc4py.PETSc as PETSc 
 PETSc.Sys.popErrorHandler() 
@@ -22,7 +23,7 @@ p0.interpolate(fd.exp(-((x-0.5)**2 + (y-0.5)**2)/0.5**2))
 dt = 0.01
 theta = 0.5
 alpha = 0.001
-M = 4
+M = 10
 solver_parameters = {'ksp_type':'preonly', 'pc_type':'lu',
                         'pc_factor_mat_solver_type':'mumps',
                         'mat_type':'aij'}
@@ -34,7 +35,7 @@ def form_mass(uu, up, vu, vp):
 
 
 diagfft_options = {
-    'ksp_type':'gmres',
+    #'ksp_type':'gmres',
     'pc_type':'lu',
     'ksp_monitor':None,
     'pc_factor_mat_solver_type':'mumps',
@@ -57,11 +58,6 @@ PD = asQ.paradiag(form_function=form_function,
                         solver_parameters=solver_parameters_diag,
                         circ="outside", tol=1.0e-12)
 PD.solve(verbose=True)
-#PD.solve()
-
-
-
-
 
 #sequential solver
 un = fd.Function(W)
@@ -94,5 +90,22 @@ for i in range(M):
     for k in range(2):
         puns[k].assign(walls[k])
     err.assign(un-pun)
+    print(fd.norm(err))
     assert(fd.norm(err) < 1.0e-15)
+ 
+
+#Visualization!
+#diff = fd.Function(Q, name="diff")
+#diff.assign(p0-puns[1])
+#plt.figure()
+#fd.tricontourf(p0)
+#plt.figure()
+#fd.tricontourf(puns[1])
+#plt.figure()
+#fd.tricontourf(diff)
+#plt.show()
+
+ 
+ 
+ 
  
